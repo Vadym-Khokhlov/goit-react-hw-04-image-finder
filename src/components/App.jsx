@@ -1,7 +1,7 @@
 import ImageGallery from './ImageGallery';
 import Searchbar from './Searchbar';
 import React, { Component } from 'react';
-import api from 'services/api';
+import { fetchImagesWithQuery } from 'services/api';
 
 export class App extends Component {
   state = {
@@ -17,7 +17,7 @@ export class App extends Component {
     try {
       this.setState({ isLoading: true });
       this.setState({ error: null });
-      const images = await api.fetchImagesWithQuery(search);
+      const images = await fetchImagesWithQuery(search);
       if (images.length === 0) {
         this.setState({ error: 'Nothing was found, try again' });
       }
