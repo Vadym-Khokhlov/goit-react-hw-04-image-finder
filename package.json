@@ -23,7 +23,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "Image Finder",
+      "react-app",
       "react-app/jest"
     ]
   },
