@@ -8,5 +8,5 @@ export const fetchImagesWithQuery = async (search, page) => {
   const response = await axios.get(
     `https://pixabay.com/api/?key=${key}&q=${search}&${params}&page=${page}`
   );
-  return response.data.hits;
+  return response.data;
 };
