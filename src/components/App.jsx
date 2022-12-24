@@ -51,9 +51,7 @@ export class App extends Component {
         }));
       }
     } catch (error) {
-      this.setState({
-        error: 'Houston, we have a problem:) try to reload the page',
-      });
+      toast.error('Houston, we have a problem:) try to reload the page');
     } finally {
       this.setState({ isLoading: false });
     }
