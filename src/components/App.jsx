@@ -2,7 +2,7 @@ import ImageGallery from './ImageGallery';
 import Searchbar from './Searchbar';
 import React, { Component } from 'react';
 import { fetchImagesWithQuery } from 'services/api';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export class App extends Component {
@@ -18,7 +18,7 @@ export class App extends Component {
   async componentDidUpdate(prevProps, prevState) {
     const { search, page } = this.state;
 
-    if (prevState.page !== this.state || prevState.search !== this.search) {
+    if (prevState.page !== page || prevState.search !== search) {
       this.setState({ isLoading: true });
       try {
         const images = await fetchImagesWithQuery(search, page);
