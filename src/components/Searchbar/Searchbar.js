@@ -1,48 +1,47 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import '../styles.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default class Searchbar extends Component {
-  state = {
-    search: '',
+const Searchbar = ({ onSubmit }) => {
+  const [search, setSearch] = useState('');
+
+  const handleSearch = e => {
+    const query = e.currentTarget.value.toLowerCase();
+    setSearch(query);
   };
 
-  handleSearch = e => {
-    this.setState({ search: e.currentTarget.value.toLowerCase() });
-  };
-
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-
-    if (this.state.search.trim() === '') {
+    const searchInput = search.trim().toLowerCase();
+    if (searchInput === '') {
       toast.info('enter your query');
       return;
     }
-    this.props.onSubmit(this.state.search);
-    this.setState({ search: '' });
+    onSubmit(searchInput);
+    setSearch('');
   };
 
-  render() {
-    return (
-      <header className="Searchbar">
-        <h1 className="Searchbar-title">Image Finder</h1>
-        <form className="SearchForm" onSubmit={this.handleSubmit}>
-          <input
-            className="SearchForm-input"
-            type="text"
-            name="search"
-            value={this.state.search}
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            onChange={this.handleSearch}
-          />
-          <button type="submit" className="SearchForm-button">
-            Try<span className="SearchForm-button-label">Search</span>
-          </button>
-        </form>
-      </header>
-    );
-  }
-}
+  return (
+    <header className="Searchbar">
+      <h1 className="Searchbar-title">Image Finder</h1>
+      <form className="SearchForm" onSubmit={handleSubmit}>
+        <input
+          className="SearchForm-input"
+          type="text"
+          name="search"
+          value={search}
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          onChange={handleSearch}
+        />
+        <button type="submit" className="SearchForm-button">
+          Try<span className="SearchForm-button-label">Search</span>
+        </button>
+      </form>
+    </header>
+  );
+};
+
+export default Searchbar;
