@@ -5,23 +5,17 @@ import '../styles.css';
 export default function ImageGalleryItem({ id, webformatURL, largeImageURL }) {
   const [showModal, setShowModal] = useState(false);
 
-  const toggleModal = () => {
-    setShowModal(showModal => !showModal);
-  };
-
   return (
     <li key={id} className="ImageGalleryItem">
       <img
         src={webformatURL}
         alt=""
         className="ImageGalleryItem-image"
-        onClick={toggleModal}
+        onClick={() => setShowModal(true)}
       />
 
       {showModal && (
-        <Modal onClose={toggleModal}>
-          <img src={largeImageURL} alt="" />
-        </Modal>
+        <Modal onClose={() => setShowModal(false)} url={largeImageURL}></Modal>
       )}
     </li>
   );

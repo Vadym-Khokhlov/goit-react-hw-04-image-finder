@@ -1,101 +1,78 @@
 import ImageGallery from './ImageGallery';
 import Searchbar from './Searchbar';
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { fetchImagesWithQuery } from 'services/api';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export class App extends Component {
-  state = {
-    search: '',
-    images: [],
-    error: '',
-    isLoading: false,
-    totalHits: 0,
-    page: 1,
-  };
+export const App = () => {
+  const [search, setSearch] = useState('');
+  const [images, setImages] = useState([]);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalHits, setTotalHits] = useState(0);
+  const [page, setPage] = useState(1);
 
-  async componentDidUpdate(prevProps, prevState) {
-    const { search, page } = this.state;
+  useEffect(() => {
+    async function findImages(search) {
+      if (!search) {
+        return;
+      }
 
-    if (prevState.page !== page || prevState.search !== search) {
-      this.setState({ isLoading: true });
+      setIsLoading(true);
       try {
-        const images = await fetchImagesWithQuery(search, page);
-        if (images.totalHits === 0) {
-          this.setState({ error: 'Nothing was found, try again' });
+        const imagesData = await fetchImagesWithQuery(search, page);
+        if (imagesData.totalHits === 0) {
+          setError('Nothing was found, try again');
           return;
         }
-        this.setState(prevState => ({
-          images: [...prevState.images, ...images.hits],
-          totalHits: images.totalHits,
-          error: '',
-        }));
+
+        setImages(prevState => [...prevState, ...imagesData.hits]);
+        setTotalHits(imagesData.totalHits);
+        setError('');
       } catch (error) {
-        this.setState({
-          errror: 'Houston, we have a problem:) try to reload the page',
-        });
+        setError('Houston, we have a problem:) try to reload the page');
       } finally {
-        this.setState({ isLoading: false });
+        setIsLoading(false);
       }
     }
-  }
+    findImages(search);
+  }, [page, search]);
 
-  handleFormSubmit = search => {
-    this.setState({
-      search,
-      images: [],
-      page: 1,
-    });
+  const handleFormSubmit = search => {
+    setSearch(search);
+    setImages([]);
+    setPage(1);
   };
 
-  loadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
+  const loadMore = () => {
+    setPage(prevState => prevState + 1);
   };
 
-  render() {
-    const { images, isLoading, error, page, totalHits } = this.state;
-    const totalPages = Math.ceil(totalHits / 12);
+  const totalPages = Math.ceil(totalHits / 12);
 
-    return (
-      <>
-        <Searchbar onSubmit={this.handleFormSubmit} />
+  return (
+    <>
+      <Searchbar onSubmit={handleFormSubmit} />
 
-        {isLoading && <p>Loading...</p>}
-        {images.length > 0 && (
-          <>
-            <ImageGallery images={images} />
+      {isLoading && <p>Loading...</p>}
+      {images.length > 0 && (
+        <>
+          <ImageGallery images={images} />
 
-            {totalPages > 1 && page < totalPages && (
-              <button className="Button" onClick={this.loadMore}>
-                Load more
-              </button>
-            )}
-          </>
-        )}
-        {error && <p className="Error">{error}</p>}
-        <ToastContainer
-          position="top-center"
-          closeOnClick={true}
-          autoClose={2000}
-        />
-      </>
-    );
-  }
-}
-
-// <Searchbar>,
-// <ImageGallery>,
-//<ImageGalleryItem>,
-// <Loader>,
-//<Button>
-//<Modal>.
-
-// key  30575180-f51bf292afceb69c3d087b7fc
-
-// id - уникальный идентификатор
-// webformatURL - ссылка на маленькое изображение для списка карточек
-// largeImageURL - ссылка на большое изображение для модального окна
-
-// App.jsx:82 Uncaught RangeError: Maximum call stack size exceeded
-//     at Module.default (App.jsx:82:1)
+          {totalPages > 1 && page < totalPages && (
+            <button className="Button" onClick={loadMore}>
+              Load more
+            </button>
+          )}
+        </>
+      )}
+      {error && <p className="Error">{error}</p>}
+      <ToastContainer
+        position="top-center"
+        closeOnClick={true}
+        autoClose={2000}
+      />
+    </>
+  );
+};

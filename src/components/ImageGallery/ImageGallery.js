@@ -1,19 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import '../styles.css';
-import PropTypes from 'prop-types';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 
-export default function ImageGallery({ images }) {
-  // static propTypes = {
-  //   images: PropTypes.arrayOf(
-  //     PropTypes.shape({
-  //       id: PropTypes.number.isRequired,
-  //       webformatURL: PropTypes.string.isRequired,
-  //       largeImageURL: PropTypes.string.isRequired,
-  //     })
-  //   ).isRequired,
-  // };
-
+const ImageGallery = ({ images }) => {
   return (
     <ul className="ImageGallery">
       {images.map(image => (
@@ -25,4 +14,6 @@ export default function ImageGallery({ images }) {
       ))}
     </ul>
   );
-}
+};
+
+export default ImageGallery;
